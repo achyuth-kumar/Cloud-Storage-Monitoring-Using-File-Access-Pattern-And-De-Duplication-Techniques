@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/monitor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://js.upload.io/upload-js/v1"></script>
+    <script src="./migration.js"></script>
+    <title>CMS | Monitor</title>
+</head>
+
+<body>
+    <header>
+        <p id="main-header">Cloud Storage Monitoring</p>
+        <nav>
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#">
+                </li>
+                <li class="nav-item">
+                    <a href="/upload">Upload</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/list">Read</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/delete">Delete</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/monitor">Monitor</a>
+                </li>
+                <li class="nav-item">
+                    <form action="/logout?_method=DELETE" method="POST">
+                        <button class="btn-logout btn-primary" type="submit">Log Out</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="big-dashboard">
+        <div class="migrationHeading">Metrics</div>
+        <div class="cards">
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.totalFiles %></h1>
+                    <h3>Total Files</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-solid fa-file"></i>
+                </div>
+            </div>
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.sensitiveFiles %></h1>
+                    <h3>Sensitive Files</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.totalRequests %></h1>
+                    <h3>Total Requests</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-solid fa-code-pull-request"></i>
+                </div>
+            </div>
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.normalFiles %></h1>
+                    <h3>Normal Files</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-solid fa-lock-open"></i>
+                </div>
+            </div>
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.getRequests %></h1>
+                    <h3>GET Requests</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-brands fa-aws"></i>
+                </div>
+            </div>
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.postRequests %></h1>
+                    <h3>POST Requests</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-brands fa-aws"></i>
+                </div>
+            </div>
+            <div class="card">
+                <div class="box">
+                    <h1><%= data.prediction %></h1>
+                    <h3>Forecasted Uploads</h3>
+                </div>
+                <div class="icon-case">
+                    <i class="fa-brands fa-aws"></i>
+                </div>
+            </div>
+        </div>
+        <div class="migrationHeading">Data Migration</div>
+        <div class="centerBox">
+            <div class="migrationTable">
+                <table>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>File Name</th>
+                        <th>Rank</th>
+                        <th>Migrate</th>
+                    </tr>
+                    <% for(var i=0; i<data.file.length; i++) {%>
+                        <tr>
+                          <% let priority = data.file[i].priority.toUpperCase()%>
+                          <td><%= i+1 %></td>
+                          <td><%= data.file[i].fileName %></td>
+                          <% if(priority==="NORMAL") { %>
+                            <td><%= data.file[i].ranking %></td>
+                          <% } else { %>
+                            <td>NA</td>
+                          <% } %>
+                          <% if(data.file[i].cloud === "AWS") { %>
+                            <td><button class="download" onclick="migrateData(`<%= data.file[i].fileLocation %>`,`<%= data.file[i].fileKey %>`,`<%= data.file[i].priority %>`,`<%= data.file[i]._id %>`)">Migrate Data</button></td>
+                          <% } else { %>
+                            <td>Migrated</td>
+                          <% } %>
+                        </tr>
+                     <% } %>
+                </table>
+            </div>
+            <div class="migrationBox hidden">
+                <div>
+                    <h1 class="mig">Upload a file...</h1>
+                    <input type="file" class="mig1" onchange="onFileSelected(event)" />
+                  </div>
+                  <script>
+                    // DOM Elements
+                    const h1           = document.querySelector(".mig")
+                    const uploadButton = document.querySelector(".mig1")
+                  </script>
+            </div>
+        </div>
+        <div class="migrationHeading files-dedup">File Level De-Duplication</div>
+        <div class="dedup">
+            <button id="file-btn" onclick="deDup()">File Level De-Duplication</button>
+            <div id="file-text">Result:</div>
+        </div>
+    </div>
+</body>
+
+</html>

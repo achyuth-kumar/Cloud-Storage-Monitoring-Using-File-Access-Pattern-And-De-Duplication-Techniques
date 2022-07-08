@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/upload.css">
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <title>CMS | Success</title>
+</head>
+
+<body>
+    <div class="dashboard">
+        <header>
+            <p id="main-header">Cloud Storage Monitoring</p>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                      <a href="#">
+                    </li>
+                    <li class="nav-item">
+                      <a href="/upload">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="/list">Read</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/delete">Delete</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/monitor">Monitor</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="/logout?_method=DELETE" method="POST">
+                            <button class="btn-logout btn-primary" type="submit">Log Out</button>
+                          </form>   
+                    </li>
+                  </ul>
+            </nav>      
+        </header>
+        <div class="ejs">
+            <p class="erd">File Uploaded Successfully!</p>
+        </div>
+    <script src="/upload.js"></script>
+</body>
+</html>

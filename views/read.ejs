@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/read.css">
+    <script src="/read.js"></script>
+    <title>CMS | List</title>
+</head>
+
+<body>
+    <div class="dashboard">
+        <header>
+            <p id="main-header">Cloud Storage Monitoring</p>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                      <a href="#">
+                    </li>
+                    <li class="nav-item">
+                      <a href="/upload">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="/list">Read</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/delete">Delete</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/monitor">Monitor</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="/logout?_method=DELETE" method="POST">
+                            <button class="btn-logout btn-primary" type="submit">Log Out</button>
+                          </form>   
+                    </li>
+                  </ul>
+            </nav>      
+        </header>
+        <main>
+            <table>
+                <tr>
+                    <th>Sl No</th>
+                    <th>File Name</th>
+                    <th>Size</th>
+                    <th>Type</th>
+                    <th>Frequency</th>
+                    <th>Location</th>
+                    <th>Download</th>
+                    <th>Priority</th>
+                </tr>
+                <% for(var i=0; i<file.length; i++) {%>
+                    <tr>
+                      <% let data = ""; let priority = file[i].priority.toUpperCase()%>
+                      <td><%= i+1 %></td>
+                      <td><%= file[i].fileName %></td>
+                      <td><%= file[i].fileSize %>B</td>
+                      <td><%= file[i].mimetype %></td>
+                      <% if(priority==="NORMAL") { %>
+                        <td><%= file[i].ranking %></td>
+                      <% } else { %>
+                        <td>NA</td>
+                      <% } %>
+                      <% if(priority==="NORMAL") { %>
+                        <td>https://cloud-file-monitoring.herokuapp.com/cdn/<%= file[i]._id %></td>
+                      <% } else { %>
+                        <td>NA</td>
+                      <% } %>
+                      <% if(priority === "NORMAL") {data="Download"} else {data="Get OTP"} %>
+                      <% if(data==="Download") { %>
+                        <td><button class="download" onclick="updateRank(`<%= file[i].fileLocation %>`,`<%= file[i].fileKey %>`,`<%= file[i].priority %>`,`<%= file[i]._id %>`)"><%= data %></button></td>
+                      <% } else { %>
+                        <td><button class="download" id="delete<%= i %>" onclick="sendOTP(`<%= file[i]._id %>`,`<%= i %>`)"><%= data %></button></td>
+                      <% } %>
+                      <td><%= file[i].priority.toUpperCase() %></td>
+                    </tr>
+                 <% } %>
+            </table>
+        </main>
+    </div>
+    <div class="otp-box otp-hide">
+          <input type="text" name="otp" id="otp">
+          <button type="submit" id="otp-btn" onclick="checkOTP()">Submit OTP</button>
+          <div class="err otp-hide"></div>
+    </div>
+</body>
+
+</html>
